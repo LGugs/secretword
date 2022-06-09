@@ -1,13 +1,40 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html, body {
+  height: 100%; /* deixar toda a área da vertical ocupada */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: fantasy;
+  margin: 0; /* define a área de margem nos quatro lados do elemento */
+  padding: 0; /* distância entre o conteúdo de um elemento e suas bordas */
+  background: 
+  linear-gradient(
+    180deg, /* Direção do gradiente, neste caso aqui vai do azul para o preto */
+   rgba(9,35,175,1) 0%, /* Primeira cor do gradiente */
+   rgba(0,0,0,1) 100% /* Segunda cor do gradiente */
+   );
+  color: white;
+}
+
+button {
+  background: #1646a0; /* cor de fundo */
+  color: #fff; /* cor do texto */
+  padding: 0 45px; /* 0 é o valor do topo e 45px (pixels) é das laterais */
+  border: 2px solid #fff; /* grossura, tipo e cor da borda respectivamente */
+  border-radius: 25px; /* define um aspecto arredondado nos cantos do botão */
+  height: 50px; /* altura baixa para ficar no formato de um comprimido */
+  text-transform: uppercase; /* todo o texto dentro do botão ficará MAIUSCULO */
+  font-weight: bold; /* define a grossura do texto, neste caso negrito padrão */
+  font-size: 1.2em; /* tamanho da fonte */
+  cursor: pointer; /* comportamento do cursor quando passar por cima do botão */
+  transition: 0.5s; /* tempo de efeito do hover */
+}
+
+/* muda a cor do background ao acontecer o hover */
+button:hover {
+  background-color: #0923af;
+}
+
+/* Essa aqui é uma graça minha, muda de cor ao segurar o click */
+button:active {
+  background-color: yellow;
 }
