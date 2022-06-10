@@ -1,3 +1,6 @@
+// Utils
+import { randomize } from './utils/Utils'
+
 // CSS
 import './App.css';
 
@@ -20,18 +23,81 @@ const stages = [
 
 function App() {
 
-  const[gameStage, setGameStage] = useState(stages[0].name); // aqui sempre vai se iniciar com o nome do primeiro estágio
-
   const[words] = useState(wordsList);
 
-  console.log(words); // É normal sair duplicado devido ao chamado do StrictMode no index.js, onde o mesmo faz verificação de execução dupla.
+  const[score, setScore] = useState(0);
+
+  const[word, setWord] = useState();
+
+  const[category, setCategory] = useState("");
+
+  const[letters, setLetters] = useState("");
+
+ 
+
+  // pick random words and categories
+  const selectCategoryAndWords = () => {
+    const categories = Object.keys(words); // pegando cada key (categorias) dentro da massa de palavras
+    const category = categories[randomize(categories)]; // Math.random gera um numero quebrado (float), por isso o floor para arredondar.
+    //console.log(category);
+    
+    const word = words[category][randomize(words[category])]; // e aqui ele pega uma palavra randomicamente da categoria selecionada.
+    //console.log(word);
+
+    return{ word, category };
+  };
+
+  const[gameStage, setGameStage] = useState(stages[0].name); // aqui sempre vai se iniciar com o nome do primeiro estágio
+
+  
+
+
+
+  //console.log(words); // É normal sair duplicado devido ao chamado do StrictMode no index.js, onde o mesmo faz verificação de execução dupla.
+
+  // starts the game
+  const startGame = () => {
+
+    //pick word and category
+    const { word, category } = selectCategoryAndWords();
+
+    // create an array of letters, without space and all of them as lowercase
+    let wordLetters = word.split(""); // faz-se o split sem caracteres a mais entre eles.
+    wordLetters = wordLetters.map((w) => w.toLowerCase()); // deixa todos em lowercase
+
+    console.log(wordLetters);
+
+    // now we set the states
+    setCategory(category);
+    setLetters(wordLetters);
+    setWord(word);
+
+    setGameStage(stages[1].name);
+  }
+
+  // process the letter input, and at the end, sends to end page
+  const checkLetter = () => {
+    setGameStage(stages[2].name);
+  }
+
+  // play the game again
+  const retry = () => {
+    setGameStage(stages[1].name);
+    setScore(0);
+  }
+
+  // returns to initial page
+  const exit = () => {
+    setGameStage(stages[0].name);
+    setScore(0);
+  }
 
   return (
     <div className="App">
     {/* É uma maneira de verificar uma variável e trocar a visualização dos componentes */}
-      {gameStage === 'start' && <StartScreen/>} {/* Também posso fazer um if ternário, mas não é tão eficiente neste caso: {gameStage === 'start' ? (<StartScreen/>) : ''} */}
-      {gameStage === 'game' && <GameScreen/>}
-      {gameStage === 'end' && <EndScreen/>}
+      {gameStage === 'start' && <StartScreen start={startGame}/>} {/* Também posso fazer um if ternário, mas não é tão eficiente neste caso: {gameStage === 'start' ? (<StartScreen/>) : ''} */}
+      {gameStage === 'game' && <GameScreen check={checkLetter} score={score} categoryWord={category}/>}
+      {gameStage === 'end' && <EndScreen again={retry} bye={exit}/>}
     </div>
   );
 }
