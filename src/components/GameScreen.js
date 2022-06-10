@@ -9,8 +9,8 @@ const GameScreen = ({ check, score, categoryWord }) => {
 
   return (
     <div className="game">
-        <p className="points">Pontuação: {score}</p>
-        <h2>Advinhe a palavra:</h2>
+        <p className="points">Pontuação: <span>{score}</span></p>
+        <h1>Advinhe a palavra:</h1>
         <h3 className="tip">
           Dica sobre a palavra: <span> {categoryWord} </span>
         </h3>
@@ -36,7 +36,7 @@ const GameScreen = ({ check, score, categoryWord }) => {
 
         <p>Você ainda tem {tryNum} tentativa(s).</p>
 
-        <button onClick={check}>Finalizar Jogo!</button>
+        {/*<button onClick={check}>Finalizar Jogo!</button>*/}
     </div>
   )
 }

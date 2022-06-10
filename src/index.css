@@ -3,7 +3,7 @@ html, body {
 }
 
 body {
-  font-family: fantasy;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   margin: 0; /* define a área de margem nos quatro lados do elemento */
   padding: 0; /* distância entre o conteúdo de um elemento e suas bordas */
   background: 
