@@ -1,10 +1,8 @@
 import "./GameScreen.css"
 import {useState} from 'react';
 
-const GameScreen = ({ check, score, categoryWord }) => {
-  
-  const [tryNum, setTryNum] = useState(3);
-  
+const GameScreen = ({ check, score, categoryWord, tryNum, letters, word, guessedLetters, wrongLetters }) => {
+
   console.log(categoryWord);
 
   return (
@@ -16,8 +14,15 @@ const GameScreen = ({ check, score, categoryWord }) => {
         </h3>
 
         <div className="wordContainer">
-          <span className="letter">A</span>
-          <span className="blankSquare"></span>
+          {letters.map((letter,i) => (
+            // aqui abaixo pegamos o array de letras e comparamos se cada elemento existe no array de tentativas,
+            // se tiver ele exibe, senão ele exibe uma caixa vazia
+            guessedLetters.includes(letter) ? (
+              <span key={i} className="letter">{letter}</span>
+            ) : (
+              <span key={i} className="blankSquare"></span>
+            )
+          ))}
         </div>
 
         <div className="letterContainer">
@@ -30,8 +35,11 @@ const GameScreen = ({ check, score, categoryWord }) => {
 
         <div className="wrongLettersContainer">
           <p>Letras já utilizadas:</p>
-          <span>a,</span>
-          <span>b,</span>
+          {(wrongLetters.length === 0) ? 
+            <span>Nenhuma palavra errada!</span> :
+            wrongLetters.map((wrongLetter, index) => (
+            <span key={index}>{wrongLetter}</span>
+          ))}
         </div>
 
         <p>Você ainda tem {tryNum} tentativa(s).</p>

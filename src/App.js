@@ -33,6 +33,11 @@ function App() {
 
   const[letters, setLetters] = useState("");
 
+  const[guessedLetters, setGuessedLetters] = useState([]); // começa com array vazio
+
+  const[wrongLetters, setWrongLetters] = useState([]);
+
+  const [tryNum, setTryNum] = useState(3);
  
 
   // pick random words and categories
@@ -96,7 +101,16 @@ function App() {
     <div className="App">
     {/* É uma maneira de verificar uma variável e trocar a visualização dos componentes */}
       {gameStage === 'start' && <StartScreen start={startGame}/>} {/* Também posso fazer um if ternário, mas não é tão eficiente neste caso: {gameStage === 'start' ? (<StartScreen/>) : ''} */}
-      {gameStage === 'game' && <GameScreen check={checkLetter} score={score} categoryWord={category}/>}
+      {gameStage === 'game' && 
+      <GameScreen 
+        check={checkLetter}
+        score={score}
+        categoryWord={category}
+        tryNum={tryNum}
+        letters={letters}
+        word={word}
+        guessedLetters={guessedLetters}
+        wrongLetters={wrongLetters}/>}
       {gameStage === 'end' && <EndScreen again={retry} bye={exit}/>}
     </div>
   );
