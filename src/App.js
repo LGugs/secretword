@@ -70,7 +70,7 @@ function App() {
     let wordLetters = word.split(""); // faz-se o split sem caracteres a mais entre eles.
     wordLetters = wordLetters.map((w) => w.toLowerCase()); // deixa todos em lowercase
 
-    console.log(wordLetters);
+    //console.log(wordLetters);
 
     // now we set the states
     setCategory(category);
@@ -81,8 +81,9 @@ function App() {
   }
 
   // process the letter input, and at the end, sends to end page
-  const checkLetter = () => {
-    setGameStage(stages[2].name);
+  const checkLetter = (inputedLetter) => {
+    console.log(inputedLetter);
+    //setGameStage(stages[2].name);
   }
 
   // play the game again

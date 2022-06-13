@@ -1,9 +1,31 @@
 import "./GameScreen.css"
-import {useState} from 'react';
+// o useRef cria referencia para algum lugar, é como se fosse dado um querySelector
+// e selecionado um elemento para manipular
+import { useState, useRef } from 'react';
 
-const GameScreen = ({ check, score, categoryWord, tryNum, letters, word, guessedLetters, wrongLetters }) => {
+const GameScreen = ({ 
+  check, 
+  score, 
+  categoryWord, 
+  tryNum,
+  letters,
+  word,
+  guessedLetters,
+  wrongLetters }) => {
 
-  console.log(categoryWord);
+  const[inputLetter, setInputLetter] = useState("");
+  const inputLetterRef = useRef(null);
+
+  const handleSubmit = (e) => {
+      e.preventDefault();
+
+      check(inputLetter);
+      setInputLetter("");
+
+      inputLetterRef.current.focus(); // esse elemento sempre será focado após o submit
+  }
+
+  //console.log(categoryWord);
 
   return (
     <div className="game">
@@ -27,8 +49,15 @@ const GameScreen = ({ check, score, categoryWord, tryNum, letters, word, guessed
 
         <div className="letterContainer">
           <p>Tente advinhar uma letra da palavra</p>
-          <form>
-            <input type="text" name="letter" maxLength="1" required  />
+          <form onSubmit={handleSubmit}>
+            <input type="text" 
+              name="letter" 
+              maxLength="1"
+              required
+              onChange = {(e) => setInputLetter(e.target.value)}
+              value={inputLetter}
+              ref={inputLetterRef}  />
+            
             <button>Jogar!</button>
           </form>
         </div>
