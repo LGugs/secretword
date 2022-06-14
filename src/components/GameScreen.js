@@ -55,7 +55,7 @@ const GameScreen = ({
               maxLength="1"
               required
               onChange = {(e) => setInputLetter(e.target.value)}
-              value={inputLetter}
+              value={inputLetter} // é necessário uma vez que após o primeiro submit o value desse input perde o valor
               ref={inputLetterRef}  />
             
             <button>Jogar!</button>
@@ -67,7 +67,7 @@ const GameScreen = ({
           {(wrongLetters.length === 0) ? 
             <span>Nenhuma palavra errada!</span> :
             wrongLetters.map((wrongLetter, index) => (
-            <span key={index}>{wrongLetter}</span>
+            <span key={index}>{wrongLetter}, </span>
           ))}
         </div>
 
