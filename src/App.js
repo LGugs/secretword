@@ -83,19 +83,63 @@ function App() {
   // process the letter input, and at the end, sends to end page
   const checkLetter = (inputedLetter) => {
     console.log(inputedLetter);
-    //setGameStage(stages[2].name);
+
+    // all letters to lowercase
+    const lowerLetter = inputedLetter.toLowerCase();
+
+    // check if letter is already used
+    if(guessedLetters.includes(lowerLetter) || wrongLetters.includes(lowerLetter)){
+      return alert("Palavra já utilizada!");
+    }
+
+    // check if the inserted letter is wrong or right
+    if(letters.includes(lowerLetter)) {
+      setGuessedLetters((storedLetters) => [...storedLetters, lowerLetter]) // se for correto, ele insere em guessedLetters
+      setScore((actualScore) => actualScore+1);
+    } else {
+      setWrongLetters((storedWrongLetters) => [...storedWrongLetters, lowerLetter]) // se for incorreto, ele insere em wrongLetters
+      setTryNum((actualNum) => actualNum-1); // é o mesmo que o 1º comentado abaixo, porém melhor.
+    /* PODE SER DESSA FORMA AQUI, ENTRETANTO TEM FORMAS MAIS ELEGANTES! COMO A QUE ESTÃO SENDO UTILIZADAS!  
+      if(tryNum > 0){
+        setTryNum(tryNum-1); // diminui as chances! esse é o 1º
+      }else{
+        // go to end page!
+        setGameStage(stages[2].name);
+      }
+    */
+    }
   }
+
+  const resetLetters = () => {
+    setGuessedLetters([]);
+    setWrongLetters([]);
+  }
+
+  const resetNumbers = () => {
+    setTryNum(3);
+    setScore(0);
+  }
+
+  // ele ficará de "vigia" a cada alteração no tryNum
+  useEffect(() => {
+    if(tryNum <= 0){
+      // reset all states
+      resetLetters();
+      
+      setGameStage(stages[2].name);
+    }
+  },[tryNum]);
 
   // play the game again
   const retry = () => {
     setGameStage(stages[1].name);
-    setScore(0);
+    resetNumbers();
   }
 
   // returns to initial page
   const exit = () => {
     setGameStage(stages[0].name);
-    setScore(0);
+    resetNumbers();
   }
 
   return (
