@@ -1,11 +1,10 @@
-const EndScreen = ({ again, bye }) => {
+const EndScreen = ({ again, score }) => {
   return (
     <div>
         <h1>Jogo acabou!</h1>
-        <h3>Jogar novamente?</h3>
+        <h2>Sua pontuação foi: <span>{score}</span></h2>
         <div>
-            <button onClick={again}>Sim!</button>
-            <button onClick={bye}>Não!</button>
+            <button onClick={again}>Jogar Novamente</button>
         </div>
     </div>
   )
