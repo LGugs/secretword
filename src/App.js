@@ -31,17 +31,20 @@ function App() {
 
   const[category, setCategory] = useState("");
 
-  const[letters, setLetters] = useState("");
+  const[letters, setLetters] = useState();
 
   const[guessedLetters, setGuessedLetters] = useState([]); // começa com array vazio
 
   const[wrongLetters, setWrongLetters] = useState([]);
 
-  const [tryNum, setTryNum] = useState(3);
- 
+  const[tryNum, setTryNum] = useState(3);
+
+  const[gameStage, setGameStage] = useState(stages[0].name); // aqui sempre vai se iniciar com o nome do primeiro estágio
+
+  
 
   // pick random words and categories
-  const selectCategoryAndWords = () => {
+  const selectCategoryAndWords = useCallback(() => {
     const categories = Object.keys(words); // pegando cada key (categorias) dentro da massa de palavras
     const category = categories[randomize(categories)]; // Math.random gera um numero quebrado (float), por isso o floor para arredondar.
     //console.log(category);
@@ -50,18 +53,18 @@ function App() {
     //console.log(word);
 
     return{ word, category };
-  };
-
-  const[gameStage, setGameStage] = useState(stages[0].name); // aqui sempre vai se iniciar com o nome do primeiro estágio
-
-  
-
-
+  }, [words]); // words fica como dependente para que a função selectCategoryAndWords seja re-renderizada somente após sua alteração
 
   //console.log(words); // É normal sair duplicado devido ao chamado do StrictMode no index.js, onde o mesmo faz verificação de execução dupla.
 
   // starts the game
-  const startGame = () => {
+  // por ter sido chamado no hook useEffect mais abaixo, a função starGame pode ser renderizada diversas vezes sem motivo
+  // para isso, devemos incluí-la utilizando o hook useCallback. Ele garante que não executaremos esta função toda vez que renderizar a "tela"
+  // é como se fosse um cache da função que será utilizada toda vez que renderizar, sem precisar executar ela novamente.
+  // dependendo do tamanho das funções, isso pode garantir uma melhor performance. 
+  const startGame = useCallback(() => {
+
+    resetLetters(); // reseta caso tenha jogado mais de uma vez
 
     //pick word and category
     const { word, category } = selectCategoryAndWords();
@@ -70,6 +73,7 @@ function App() {
     let wordLetters = word.split(""); // faz-se o split sem caracteres a mais entre eles.
     wordLetters = wordLetters.map((w) => w.toLowerCase()); // deixa todos em lowercase
 
+    
     //console.log(wordLetters);
 
     // now we set the states
@@ -78,11 +82,14 @@ function App() {
     setWord(word);
 
     setGameStage(stages[1].name);
-  }
+  }, [selectCategoryAndWords]); 
+  // o selectCategoryAndWords é uma importante função para o starGame, portanto é colocado como dependente do useCallback.
+  // por isso, o startGame só será reenderizado caso o selectCategoryAndWords seja alterado.
+
 
   // process the letter input, and at the end, sends to end page
   const checkLetter = (inputedLetter) => {
-    console.log(inputedLetter);
+    //console.log(inputedLetter);
 
     // all letters to lowercase
     const lowerLetter = inputedLetter.toLowerCase();
@@ -95,7 +102,7 @@ function App() {
     // check if the inserted letter is wrong or right
     if(letters.includes(lowerLetter)) {
       setGuessedLetters((storedLetters) => [...storedLetters, lowerLetter]) // se for correto, ele insere em guessedLetters
-      setScore((actualScore) => actualScore+1);
+      setScore((actualScore) => actualScore+1); // falta eu pegar mais de uma inserção
     } else {
       setWrongLetters((storedWrongLetters) => [...storedWrongLetters, lowerLetter]) // se for incorreto, ele insere em wrongLetters
       setTryNum((actualNum) => actualNum-1); // é o mesmo que o 1º comentado abaixo, porém melhor.
@@ -121,6 +128,7 @@ function App() {
   }
 
   // ele ficará de "vigia" a cada alteração no tryNum
+  // end game if surpasses wrong tries
   useEffect(() => {
     if(tryNum <= 0){
       // reset all states
@@ -130,16 +138,25 @@ function App() {
     }
   },[tryNum]);
 
+  // check win condition
+  useEffect(() => {
+    // pegaremos somente letras unicas da palavra a ser advinhada,
+    // uma vez que guessedLetters só tem letras unicas também
+    const uniqueLetters = [...new Set(letters)]; // gera um array somente com valores unicos!
+    // win condition
+    if(guessedLetters.length === uniqueLetters.length && gameStage === 'game'){
+      setScore((actualScore) => actualScore += 100); // += é o mesmo que: actualScore = actualScore + 100;
+      // reinicia o jogo com a vitoria, com uma nova palavra e categoria
+      //console.log("oi");  
+      startGame();
+    }
+  }, [guessedLetters, letters, startGame, gameStage]); // letters e startGame foram adicionados somente para evitar o warning dado, mas eles não são utilizados.
+
   // play the game again
   const retry = () => {
     setGameStage(stages[1].name);
     resetNumbers();
-  }
-
-  // returns to initial page
-  const exit = () => {
-    setGameStage(stages[0].name);
-    resetNumbers();
+    startGame();
   }
 
   return (
@@ -156,7 +173,7 @@ function App() {
         word={word}
         guessedLetters={guessedLetters}
         wrongLetters={wrongLetters}/>}
-      {gameStage === 'end' && <EndScreen again={retry} bye={exit}/>}
+      {gameStage === 'end' && <EndScreen again={retry} score={score}/>}
     </div>
   );
 }
